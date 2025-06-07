@@ -100,7 +100,7 @@ const DetailPeminjaman = () => {
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: 'url(/fixbg.jpg)',
+          backgroundImage: 'url(fixbg.jpg)',
           backgroundAttachment: 'fixed'
         }}
       >
@@ -197,6 +197,20 @@ const DetailPeminjaman = () => {
               opacity: 1;
             }
           }
+
+          /* Custom dropdown styling */
+          .custom-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+          }
+
+          .custom-select option {
+            text-align: left;
+            padding: 0.5rem;
+          }
         `}</style>
 
         {/* Header */}
@@ -287,11 +301,15 @@ const DetailPeminjaman = () => {
                   />
                 </div>
                 <div className="relative">
-                  <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5 z-10" />
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="pl-12 pr-10 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-[#096B68] focus:border-[#096B68] transition-all duration-300 appearance-none bg-white/80 backdrop-filter backdrop-blur-sm min-w-48"
+                    className="custom-select pl-12 pr-10 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-[#096B68] focus:border-[#096B68] transition-all duration-300 appearance-none bg-white/80 backdrop-filter backdrop-blur-sm min-w-48 text-center cursor-pointer"
+                    style={{
+                      textAlignLast: 'center',
+                      direction: 'ltr'
+                    }}
                   >
                     <option value="semua">Semua Status</option>
                     <option value="dipinjam">Sedang Dipinjam</option>

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Menu, X, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showLogoutSuccess, setShowLogoutSuccess] = useState(false);
+  const [clickedItem, setClickedItem] = useState(null);
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  
+  const navigate = useNavigate();
   const location = useLocation();
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -38,40 +39,67 @@ const Navbar = () => {
     return location.pathname === path;
   };
 
-  // Navigation links - Item mengarah ke /barang
+  // Handle navigation click with cursor effect
+  const handleNavClick = (event, path) => {
+    event.preventDefault();
+    
+    const rect = event.currentTarget.getBoundingClientRect();
+    setCursorPosition({
+      x: event.clientX,
+      y: event.clientY
+    });
+    setClickedItem(path);
+    
+    // Navigate to the path
+    navigate(path);
+    
+    // Remove the effect after animation
+    setTimeout(() => {
+      setClickedItem(null);
+    }, 600);
+  };
+
+  // Handle logout confirmation
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true);
+    closeMobileMenu();
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutDialog(false);
+    setShowLogoutSuccess(true);
+    
+    setTimeout(() => {
+      setShowLogoutSuccess(false);
+      // Navigate to login page
+      navigate('/');
+    }, 2000);
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutDialog(false);
+  };
+
+  // Navigation links - Updated to match your routes
   const navLinks = [
     { to: '/home', label: 'Home' },
     { to: '/barang', label: 'Item' },
     { to: '/loan', label: 'Loan' },
-    { to: '/detail', label: 'Details' }
+    { to: '/detailpeminjaman', label: 'Details' }
   ];
 
-  // Hamburger menu items dengan icon
+  // Hamburger menu items
   const hamburgerMenuItems = [
     { 
-      to: '/profile', 
-      label: 'Profile', 
-      icon: User,
-      onClick: () => {
-        console.log('Navigate to Profile');
-        closeMobileMenu();
-      }
-    },
-    { 
-      to: '/signout', 
+      to: '#', 
       label: 'Sign Out', 
       icon: LogOut,
-      onClick: () => {
-        console.log('Sign Out clicked');
-        // Add your sign out logic here
-        closeMobileMenu();
-      }
+      onClick: handleLogoutClick
     }
   ];
 
   return (
     <>
-      {/* Custom CSS Animations */}
       <style jsx>{`
         @keyframes shimmer-wave {
           0% {
@@ -160,6 +188,61 @@ const Navbar = () => {
             box-shadow: 0 0 0 0 rgba(125, 211, 192, 0.7);
           }
         }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes pulse-success {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+        }
+
+        @keyframes cursor-pointer-appear {
+          0% {
+            opacity: 0;
+            transform: scale(0.5) rotate(-15deg);
+          }
+          20% {
+            opacity: 1;
+            transform: scale(1.3) rotate(5deg);
+          }
+          40% {
+            transform: scale(1.1) rotate(-3deg);
+          }
+          60% {
+            transform: scale(1.2) rotate(2deg);
+          }
+          80% {
+            transform: scale(1) rotate(0deg);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(0.7) rotate(0deg);
+          }
+        }
         
         .shimmer-effect {
           background: linear-gradient(
@@ -188,7 +271,42 @@ const Navbar = () => {
         .border-dance {
           animation: border-dance 2.5s ease-in-out infinite;
         }
+
+        .dialog-fade-in {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .dialog-slide-in {
+          animation: slideIn 0.3s ease-out;
+        }
+
+        .pulse-success {
+          animation: pulse-success 1s ease-in-out infinite;
+        }
+
+        .cursor-pointer-effect {
+          position: fixed;
+          pointer-events: none;
+          z-index: 9999;
+          font-size: 28px;
+          animation: cursor-pointer-appear 0.6s ease-out forwards;
+          text-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+          filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+        }
       `}</style>
+
+      {/* Cursor Pointer Effect */}
+      {clickedItem && (
+        <div 
+          className="cursor-pointer-effect"
+          style={{
+            left: `${cursorPosition.x - 14}px`,
+            top: `${cursorPosition.y - 14}px`,
+          }}
+        >
+          👆
+        </div>
+      )}
 
       <nav className="bg-[#096b68] shadow-md relative navbar-container">
         <div className="container mx-auto px-4">
@@ -212,7 +330,8 @@ const Navbar = () => {
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`relative px-3 py-1 text-sm font-medium transition-all duration-300 transform border-2 rounded-full overflow-hidden ${
+                    onClick={(e) => handleNavClick(e, link.to)}
+                    className={`relative px-3 py-1 text-sm font-medium transition-all duration-300 transform border-2 rounded-full overflow-hidden cursor-pointer ${
                       isActiveRoute(link.to)
                         ? 'text-[#003d39] bg-gradient-to-b from-[#E8E4BB] to-[#D4D0A7] border-[#7DD3C0] shadow-lg scale-105 font-bold floating-effect border-dance'
                         : 'text-[#B4EBE6] border-transparent hover:text-[#096b68] hover:bg-gradient-to-r hover:from-[#7DD3C0] hover:to-[#4ECDC4] hover:scale-105 hover:shadow-lg hover:border-[#FFFBDE]'
@@ -231,8 +350,6 @@ const Navbar = () => {
                         {/* Floating color-shifting background */}
                         <div className="absolute top-0.5 left-0.5 right-0.5 bottom-0.5 color-shift opacity-20 rounded-full"></div>
                         
-
-                        
                         {/* Subtle outer glow ring */}
                         <div className="absolute -inset-1 bg-gradient-to-r from-[#7DD3C0] via-[#4ECDC4] to-[#7DD3C0] rounded-full opacity-30 blur-sm"></div>
                       </>
@@ -245,7 +362,7 @@ const Navbar = () => {
               <div className="flex">
                 <button
                   onClick={toggleMobileMenu}
-                  className="inline-flex items-center justify-center p-2 rounded-full text-white hover:text-[#096b68] hover:bg-gradient-to-r from-[#7DD3C0] to-[#4ECDC4] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#7DD3C0] transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                  className="inline-flex items-center justify-center p-2 rounded-full text-white hover:text-[#096b68] hover:bg-gradient-to-r from-[#7DD3C0] to-[#4ECDC4] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#7DD3C0] transition-all duration-300 hover:scale-110 hover:shadow-lg cursor-pointer"
                   aria-expanded={isMobileMenuOpen}
                 >
                   <span className="sr-only">Toggle menu</span>
@@ -259,46 +376,82 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile/Hamburger Menu - Updated dengan Profile dan Sign Out */}
+          {/* Mobile/Hamburger Menu - Hanya Sign Out */}
           <div
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              isMobileMenuOpen ? 'max-h-32 opacity-100' : 'max-h-0 opacity-0'
+              isMobileMenuOpen ? 'max-h-16 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
             <div className="px-2 pt-2 pb-3 space-y-1 bg-[#096b68] border-t border-[#7DD3C0]">
               {hamburgerMenuItems.map((item) => {
                 const IconComponent = item.icon;
-                const isSignOut = item.label === 'Sign Out';
-                
-                if (isSignOut) {
-                  return (
-                    <button
-                      key={item.to}
-                      onClick={item.onClick}
-                      className="w-full flex items-center px-4 py-2 rounded-full text-base font-medium transition-all duration-300 text-left transform hover:scale-105 text-[#FFFBDE] hover:text-[#096b68] hover:bg-white hover:shadow-lg"
-                    >
-                      <IconComponent className="w-5 h-5 mr-3 transition-colors duration-300 text-[#FFFBDE] hover:text-[#096b68]" />
-                      {item.label}
-                    </button>
-                  );
-                }
                 
                 return (
-                  <Link
+                  <button
                     key={item.to}
-                    to={item.to}
-                    onClick={closeMobileMenu}
-                    className="w-full flex items-center px-4 py-2 rounded-full text-base font-medium transition-all duration-300 text-left transform hover:scale-105 text-white hover:text-[#096b68] hover:bg-gradient-to-r from-[#7DD3C0] to-[#4ECDC4] hover:shadow-lg"
+                    onClick={item.onClick}
+                    className="w-full flex items-center px-4 py-2 rounded-full text-base font-medium transition-all duration-300 text-left transform hover:scale-105 text-[#FFFBDE] hover:text-[#096b68] hover:bg-white hover:shadow-lg cursor-pointer"
                   >
-                    <IconComponent className="w-5 h-5 mr-3 transition-colors duration-300 text-white" />
+                    <IconComponent className="w-5 h-5 mr-3 transition-colors duration-300 text-[#FFFBDE] hover:text-[#096b68]" />
                     {item.label}
-                  </Link>
+                  </button>
                 );
               })}
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Logout Confirmation Dialog - Tanpa dark overlay */}
+      {showLogoutDialog && (
+        <div className="fixed top-75 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 dialog-fade-in">
+          <div className="bg-white rounded-lg p-6 max-w-sm mx-4 shadow-2xl border-2 border-gray-200 dialog-slide-in">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                <LogOut className="w-6 h-6 text-red-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800">Konfirmasi Logout</h3>
+            </div>
+            <p className="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari aplikasi?</p>
+            <div className="flex space-x-3">
+              <button
+                onClick={handleLogoutCancel}
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200 font-medium cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleLogoutConfirm}
+                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 font-medium cursor-pointer"
+              >
+                Ya, Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Logout Success Message - Tanpa dark overlay */}
+      {showLogoutSuccess && (
+        <div className="fixed top-75 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 dialog-fade-in">
+          <div className="bg-white rounded-lg p-6 max-w-sm mx-4 shadow-2xl border-2 border-green-200 dialog-slide-in">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 pulse-success">
+                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Berhasil Logout</h3>
+              <p className="text-gray-600">Anda akan dialihkan ke halaman login...</p>
+              <div className="mt-4">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-green-500 h-2 rounded-full transition-all duration-2000" style={{width: '100%'}}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

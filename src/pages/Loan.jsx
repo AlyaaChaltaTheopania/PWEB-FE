@@ -294,7 +294,7 @@ const Loan = () => {
                   name="nama"
                   value={formData.nama}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-400"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#129990] focus:border-[#129990] transition-all duration-300 hover:border-[#129990]"
                   placeholder="Masukkan nama lengkap"
                 />
               </div>
@@ -308,7 +308,7 @@ const Loan = () => {
                   name="tanggalPinjam"
                   value={formData.tanggalPinjam}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-400"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#129990] focus:border-[#129990] transition-all duration-300 hover:border-[#129990]"
                 />
               </div>
               
@@ -321,7 +321,7 @@ const Loan = () => {
                   name="tanggalKembali"
                   value={formData.tanggalKembali}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-400"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#129990] focus:border-[#129990] transition-all duration-300 hover:border-[#129990]"
                 />
               </div>
             </div>
@@ -342,7 +342,7 @@ const Loan = () => {
                   name="namaBarang"
                   value={barangBaru.namaBarang}
                   onChange={handleBarangChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 hover:border-teal-400"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#129990] focus:border-[#129990] transition-all duration-300 hover:border-[#129990]"
                 >
                   <option value="">Pilih Barang</option>
                   {barangTersedia.map((barang, index) => (
@@ -361,7 +361,7 @@ const Loan = () => {
                   value={barangBaru.jumlah}
                   onChange={handleBarangChange}
                   min="1"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 hover:border-teal-400"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#129990] focus:border-[#129990] transition-all duration-300 hover:border-[#129990]"
                 />
               </div>
               
@@ -374,7 +374,7 @@ const Loan = () => {
                   name="keterangan"
                   value={barangBaru.keterangan}
                   onChange={handleBarangChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 hover:border-teal-400"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#129990] focus:border-[#129990] transition-all duration-300 hover:border-[#129990]"
                   placeholder="Opsional"
                 />
               </div>
@@ -382,7 +382,7 @@ const Loan = () => {
               <button
                 type="button"
                 onClick={tambahBarang}
-                className="px-6 py-3 bg-[#FFFBDE] text-[#096B68] font-medium rounded-xl hover:bg-[#90D1CA] focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 shadow-lg"
+                className="px-6 py-3 bg-[#FFFBDE] text-[#096B68] font-medium rounded-xl hover:bg-[#90D1CA] focus:outline-none focus:ring-2 focus:ring-[#129990] transition-all duration-300 shadow-lg cursor-pointer"
               >
                 Tambah
               </button>
@@ -436,7 +436,7 @@ const Loan = () => {
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-12 py-4 bg-[#096B68] text-white font-bold text-lg rounded-2xl hover:bg-[#90D1CA] focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 shadow-2xl"
+              className="px-12 py-4 bg-[#096B68] text-white font-bold text-lg rounded-2xl hover:bg-[#90D1CA] focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 shadow-2xl cursor-pointer"
             >
               Submit Peminjaman 
             </button>
